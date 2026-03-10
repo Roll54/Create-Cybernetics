@@ -11,3 +11,6 @@ Modeling Artists: Artistic VoidK
 
 Translators: 
     Roll54 - Ukranian
+
+Sound Design: 
+    Tar - Robosurgeon Surgery Sound
