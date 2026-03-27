@@ -10,8 +10,8 @@ Credits:
 Modeling Artists: Artistic VoidK
 
 Translators: 
-    Ukranian - Roll54, Tenwoc 
-    Japanese - hamu6251ren0725-hue
+    > Ukranian - Roll54, Tenwoc 
+    > Japanese - hamu6251ren0725-hue
 
 Sound Design: 
-    Tar - Robosurgeon Surgery Sound
+    > Tar - Robosurgeon Surgery Sound
