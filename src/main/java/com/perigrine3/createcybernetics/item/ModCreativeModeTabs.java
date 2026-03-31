@@ -147,6 +147,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.SCAVENGED_BONEBATTERY);
                         output.accept(ModItems.SCAVENGED_BONEFLEX);
                         output.accept(ModItems.SCAVENGED_BONELACING);
+                        output.accept(ModItems.SCAVENGED_CAPACITORFRAME);
                         output.accept(ModItems.SCAVENGED_PIEZO);
                         output.accept(ModItems.SCAVENGED_SPINALINJECTOR);
                         output.accept(ModItems.SCAVENGED_SANDEVISTAN);
@@ -166,6 +167,8 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.SCAVENGED_MATRIX);
                         output.accept(ModItems.SCAVENGED_NEURALCONTEXTUALIZER);
                         output.accept(ModItems.SCAVENGED_CYBERDECK);
+                        output.accept(ModItems.SCAVENGED_NEURALPROCESSOR);
+                        output.accept(ModItems.SCAVENGED_ICEPROTOCOL);
                         output.accept(ModItems.SCAVENGED_IDEM);
                         output.accept(ModItems.SCAVENGED_CHIPWARESLOTS);
                         output.accept(ModItems.SCAVENGED_CYBERHEART);
@@ -198,6 +201,11 @@ public class ModCreativeModeTabs {
 
                         if (ModItems.SCAVENGED_SWEAT != null) {
                             output.accept(ModItems.SCAVENGED_SWEAT);
+                        }
+                        if (ModItems.SCAVENGED_MANABATTERY != null && ModItems.SCAVENGED_MANASKIN != null && ModItems.SCAVENGED_SPELLJAMMER != null) {
+                            output.accept(ModItems.SCAVENGED_MANABATTERY);
+                            output.accept(ModItems.SCAVENGED_MANASKIN);
+                            output.accept(ModItems.SCAVENGED_SPELLJAMMER);
                         }
 
                         output.accept(ModItems.SCAVENGED_SYNTHMUSCLE);
@@ -269,6 +277,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.BONEUPGRADES_BONEBATTERY);
                         output.accept(ModItems.BONEUPGRADES_BONEFLEX);
                         output.accept(ModItems.BONEUPGRADES_BONELACING);
+                        output.accept(ModItems.BONEUPGRADES_CAPACITORFRAME);
                         output.accept(ModItems.BONEUPGRADES_PIEZO);
                         output.accept(ModItems.BONEUPGRADES_SPINALINJECTOR);
                         output.accept(ModItems.BONEUPGRADES_SANDEVISTAN);

@@ -120,32 +120,29 @@ public final class MissingOrganController {
         /* -------------------- LUNGS -------------------- */
         boolean hasGills = data.hasSpecificItem(ModItems.WETWARE_WATERBREATHINGLUNGS.get(), CyberwareSlot.LUNGS);
         boolean inWater = player.isUnderWater() || player.isInWaterOrRain();
+        boolean canBreathe = (hasLungs && !inWater) ||          // normal lungs on land
+                             (hasGills && inWater) ||           // gills in water
+                             (hasLungs && hasGills);            // both = always
 
-        if (!hasLungs) {
-            boolean canBreatheHere = hasGills && inWater;
-
-            if (canBreatheHere) {
-                player.getPersistentData().remove(NO_LUNGS_AIR);
-                player.setAirSupply(player.getMaxAirSupply());
-            } else {
-                CompoundTag pd = player.getPersistentData();
-
-                int air = pd.contains(NO_LUNGS_AIR, Tag.TAG_INT)
-                        ? pd.getInt(NO_LUNGS_AIR)
-                        : player.getAirSupply();
-
-                air -= 1;
-
-                if (air <= -20) {
-                    player.hurt(ModDamageSources.missingLungs(player.level(), player, null), 2);
-                    air = 0;
-                }
-
-                pd.putInt(NO_LUNGS_AIR, air);
-                player.setAirSupply(air);
-            }
-        } else {
+        if (canBreathe) {
             player.getPersistentData().remove(NO_LUNGS_AIR);
+            player.setAirSupply(player.getMaxAirSupply());
+        } else {
+            CompoundTag pd = player.getPersistentData();
+
+            int air = pd.contains(NO_LUNGS_AIR, Tag.TAG_INT)
+                    ? pd.getInt(NO_LUNGS_AIR)
+                    : player.getAirSupply();
+
+            air -= 1;
+
+            if (air <= -20) {
+                player.hurt(ModDamageSources.missingLungs(player.level(), player, null), 2);
+                air = 0;
+            }
+
+            pd.putInt(NO_LUNGS_AIR, air);
+            player.setAirSupply(air);
         }
 
         /* -------------------- LIVER -------------------- */

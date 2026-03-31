@@ -15,6 +15,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -77,25 +78,25 @@ public class OxygenTankItem extends Item implements ICyberwareItem {
     }
 
     @Override
-    public int getEnergyUsedPerTick(Player player, ItemStack installedStack, CyberwareSlot slot) {
-        return (player != null && player.isEyeInFluid(FluidTags.WATER)) ? ENERGY_PER_TICK_UNDERWATER : 0;
+    public int getEnergyUsedPerTick(LivingEntity entity, ItemStack installedStack, CyberwareSlot slot) {
+        return (entity != null && entity.isEyeInFluid(FluidTags.WATER)) ? ENERGY_PER_TICK_UNDERWATER : 0;
     }
 
     @Override
-    public boolean requiresEnergyToFunction(Player player, ItemStack installedStack, CyberwareSlot slot) {
+    public boolean requiresEnergyToFunction(LivingEntity entity, ItemStack installedStack, CyberwareSlot slot) {
         return true;
     }
 
     @Override
-    public void onInstalled(Player player) {
-        if (!player.level().isClientSide) {
+    public void onInstalled(LivingEntity entity) {
+        if (!entity.level().isClientSide && entity instanceof Player player) {
             AirHandler.resetOxygenTankTracking(player);
         }
     }
 
     @Override
-    public void onRemoved(Player player) {
-        if (!player.level().isClientSide) {
+    public void onRemoved(LivingEntity entity) {
+        if (!entity.level().isClientSide && entity instanceof Player player) {
             AirHandler.resetOxygenTankTracking(player);
         }
     }

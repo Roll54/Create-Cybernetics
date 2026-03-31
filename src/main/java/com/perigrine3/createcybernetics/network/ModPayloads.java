@@ -2,6 +2,7 @@ package com.perigrine3.createcybernetics.network;
 
 import com.perigrine3.createcybernetics.api.CyberwareSlot;
 import com.perigrine3.createcybernetics.api.InstalledCyberware;
+import com.perigrine3.createcybernetics.client.render.CyberentitySandevistanMirageTrail;
 import com.perigrine3.createcybernetics.client.render.SandevistanMirageTrail;
 import com.perigrine3.createcybernetics.common.capabilities.ModAttachments;
 import com.perigrine3.createcybernetics.common.capabilities.PlayerCyberwareData;
@@ -12,6 +13,7 @@ import com.perigrine3.createcybernetics.network.payload.*;
 import com.perigrine3.createcybernetics.util.ModTags;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
@@ -36,16 +38,6 @@ public final class ModPayloads {
                 (payload, ctx) -> ctx.enqueueWork(() -> {
                     if (ctx.player() instanceof net.minecraft.server.level.ServerPlayer sp) {
                         GuardianEyeEffect.setUseHeld(sp, payload.held());
-                    }
-                })
-        );
-
-        r.playToServer(
-                AerostasisGyrobladderEffect.GyroJumpHeldPayload.TYPE,
-                AerostasisGyrobladderEffect.GyroJumpHeldPayload.STREAM_CODEC,
-                (payload, ctx) -> ctx.enqueueWork(() -> {
-                    if (ctx.player() instanceof net.minecraft.server.level.ServerPlayer sp) {
-                        AerostasisGyrobladderEffect.handleJumpHeldPayload(sp, payload.held());
                     }
                 })
         );

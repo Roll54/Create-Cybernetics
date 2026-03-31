@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.perigrine3.createcybernetics.CreateCybernetics;
 import com.perigrine3.createcybernetics.common.capabilities.ModAttachments;
 import com.perigrine3.createcybernetics.common.capabilities.PlayerCyberwareData;
+import com.perigrine3.createcybernetics.item.ModItems;
 import com.perigrine3.createcybernetics.network.payload.CastCyberdeckQuickhackPayload;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
@@ -21,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
@@ -44,6 +46,7 @@ public class CyberdeckQuickhackWheelScreen extends Screen {
             ResourceLocation.fromNamespaceAndPath(CreateCybernetics.MODID, "cyberdeck_quickhack_wheel");
 
     private static final double MAX_TARGET_RANGE = 25.0D;
+    private static final int CAST_COOLDOWN_TICKS = 200;
 
     private static boolean OPEN = false;
     private static int SELECTED_INDEX = 0;
@@ -324,8 +327,25 @@ public class CyberdeckQuickhackWheelScreen extends Screen {
             poseStack.popPose();
         }
 
+        drawCooldownAboveWheel(graphics, mc, cx, cy);
         drawTargetInfoAboveCrosshair(graphics, mc, cx, cy);
         drawSelectedQuickhackInfo(graphics, mc, cx, cy);
+    }
+
+    private static void drawCooldownAboveWheel(GuiGraphics graphics, Minecraft mc, int cx, int cy) {
+        if (mc.player == null) return;
+
+        Item cyberdeckItem = ModItems.BRAINUPGRADES_CYBERDECK.get();
+        float cooldownPercent = mc.player.getCooldowns().getCooldownPercent(cyberdeckItem, 0.0F);
+        if (cooldownPercent <= 0.0F) return;
+
+        int remainingTicks = Mth.ceil(cooldownPercent * CAST_COOLDOWN_TICKS);
+        float remainingSeconds = remainingTicks / 20.0F;
+
+        String text = String.format("Cooldown: %.1fs", remainingSeconds);
+        int width = mc.font.width(text);
+
+        graphics.drawString(mc.font, text, cx - (width / 2), cy - 95, 0xFFFF5555, true);
     }
 
     private static void drawTargetInfoAboveCrosshair(GuiGraphics graphics, Minecraft mc, int cx, int cy) {

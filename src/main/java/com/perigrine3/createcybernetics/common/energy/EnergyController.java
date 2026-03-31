@@ -8,6 +8,7 @@ import com.perigrine3.createcybernetics.block.ModBlocks;
 import com.perigrine3.createcybernetics.common.capabilities.ModAttachments;
 import com.perigrine3.createcybernetics.common.capabilities.PlayerCyberwareData;
 import com.perigrine3.createcybernetics.effect.ModEffects;
+import com.perigrine3.createcybernetics.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -41,7 +42,7 @@ public final class EnergyController {
         // EMP / REBOOT: wipe stored energy, clear activation-paid flags,
         // and mark all cyberware unpowered.
         // ================================================================
-        if (hasEmpLikeShutdownEffect(player)) {
+        if (hasEmpLikeShutdownEffect(player) && !hasEmpProtection(data)) {
             data.setEnergyStored(player, 0);
 
             for (var entry : data.getAll().entrySet()) {
@@ -299,6 +300,10 @@ public final class EnergyController {
         Level level = player.level();
         BlockPos below = player.blockPosition().below();
         return level.getBlockState(below).is(ModBlocks.CHARGING_BLOCK.get());
+    }
+
+    private static boolean hasEmpProtection(PlayerCyberwareData data) {
+        return data.hasSpecificItem(ModItems.BONEUPGRADES_CAPACITORFRAME.get(), CyberwareSlot.BONE);
     }
 
     private static final class MutableInt {

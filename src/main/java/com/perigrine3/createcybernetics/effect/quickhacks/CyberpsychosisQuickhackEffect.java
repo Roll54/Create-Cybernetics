@@ -21,7 +21,7 @@ public class CyberpsychosisQuickhackEffect extends MobEffect {
     public static final String HUMANITY_PENALTY_KEY = "quickhack_cyberpsychosis";
 
     public CyberpsychosisQuickhackEffect() {
-        super(MobEffectCategory.HARMFUL, 0xFFAA0044);
+        super(MobEffectCategory.HARMFUL, 0xFF4AB3FF);
     }
 
     public static boolean applyQuickhack(LivingEntity target) {

@@ -82,8 +82,6 @@ public final class IronsSpellbooksCompat {
     }
 
 
-    /* -------------------- DamageType resolution (Holder) -------------------- */
-
     public static Optional<Holder<DamageType>> resolveDamageTypeHolder(RegistryAccess access, ResourceLocation id) {
         if (!isLoaded()) return Optional.empty();
 
@@ -97,8 +95,6 @@ public final class IronsSpellbooksCompat {
         Registry<DamageType> reg = access.registryOrThrow(Registries.DAMAGE_TYPE);
         return reg.getHolderOrThrow(DamageTypes.LIGHTNING_BOLT);
     }
-
-    /* -------------------- DamageSource helpers (ResourceKey-based; fixes your compile error) -------------------- */
 
     public static DamageSource lightningMagic(Level level, @Nullable Entity directEntity, @Nullable Entity causingEntity) {
         ResourceKey<DamageType> key = resolveDamageTypeHolder(level.registryAccess(), DT_LIGHTNING_MAGIC).isPresent()
@@ -116,8 +112,6 @@ public final class IronsSpellbooksCompat {
         DamageSource src = lightningMagic(target.level(), directEntity, causingEntity);
         return target.hurt(src, amount);
     }
-
-    /* -------------------- Convenience: identify Iron's lightning magic -------------------- */
 
     public static boolean isLightningMagic(DamageSource src) {
         if (src == null) return false;

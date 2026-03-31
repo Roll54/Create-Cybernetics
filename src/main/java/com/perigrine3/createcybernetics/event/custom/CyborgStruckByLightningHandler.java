@@ -1,11 +1,15 @@
 package com.perigrine3.createcybernetics.event.custom;
 
 import com.perigrine3.createcybernetics.CreateCybernetics;
+import com.perigrine3.createcybernetics.api.CyberwareSlot;
+import com.perigrine3.createcybernetics.common.capabilities.ModAttachments;
+import com.perigrine3.createcybernetics.common.capabilities.PlayerCyberwareData;
 import com.perigrine3.createcybernetics.compat.ironsspells.IronsSpellbooksCompat;
 import com.perigrine3.createcybernetics.effect.ModEffects;
 import com.perigrine3.createcybernetics.entity.custom.CyberskeletonEntity;
 import com.perigrine3.createcybernetics.entity.custom.CyberzombieEntity;
 import com.perigrine3.createcybernetics.entity.custom.SmasherEntity;
+import com.perigrine3.createcybernetics.item.ModItems;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -58,7 +62,11 @@ public final class CyborgStruckByLightningHandler {
             if (FullBorgHandler.hasAnyImplantsAtAll(player)) {
                 applyEmp(player);
                 if (!FullBorgHandler.isFullBorg(player)) {
-                    player.hurt(player.damageSources().lightningBolt(), 7.0F);
+                    PlayerCyberwareData data = player.getData(ModAttachments.CYBERWARE);
+
+                    if (!data.hasSpecificItem(ModItems.BONEUPGRADES_CAPACITORFRAME.get(), CyberwareSlot.BONE)) {
+                        player.hurt(player.damageSources().lightningBolt(), 7.0F);
+                    }
                 }
             }
         }
@@ -76,9 +84,7 @@ public final class CyborgStruckByLightningHandler {
         }
 
         if (living instanceof ServerPlayer player) {
-            if (FullBorgHandler.isFullBorg(player)) {
-                applyEmp(player);
-            }
+            applyEmp(player);
         }
     }
 

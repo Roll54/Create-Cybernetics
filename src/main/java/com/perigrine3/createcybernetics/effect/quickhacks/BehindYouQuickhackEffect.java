@@ -21,7 +21,7 @@ public class BehindYouQuickhackEffect extends MobEffect {
     private static final int SOUND_COUNT = 3;
 
     public BehindYouQuickhackEffect() {
-        super(MobEffectCategory.HARMFUL, 0xFF6A0000);
+        super(MobEffectCategory.HARMFUL, 0xFF4AB3FF);
     }
 
     public static boolean applyQuickhack(LivingEntity target) {

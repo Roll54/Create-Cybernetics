@@ -1,7 +1,9 @@
 package com.perigrine3.createcybernetics.effect.quickhacks;
 
 import com.perigrine3.createcybernetics.api.CyberwareSlot;
+import com.perigrine3.createcybernetics.common.capabilities.EntityCyberwareData;
 import com.perigrine3.createcybernetics.common.capabilities.ModAttachments;
+import com.perigrine3.createcybernetics.common.capabilities.ModMobAttachments;
 import com.perigrine3.createcybernetics.common.capabilities.PlayerCyberwareData;
 import com.perigrine3.createcybernetics.effect.ModEffects;
 import com.perigrine3.createcybernetics.item.cyberware.ICEProtocolItem;
@@ -21,36 +23,64 @@ public class OverheatQuickhackEffect extends MobEffect {
     private static final float SUCCESS_CHANCE = 0.75f;
 
     public OverheatQuickhackEffect() {
-        super(MobEffectCategory.HARMFUL, 0xFF6A00);
+        super(MobEffectCategory.HARMFUL, 0xFF4AB3FF);
     }
 
     public static boolean applyQuickhack(LivingEntity target) {
-        if (!(target instanceof ServerPlayer player)) return false;
-        if (ICEProtocolItem.negatesQuickhack(player)) return false;
-        if (!hasValidCyberwareTarget(target)) {
-            return false;
-        }
+        if (target == null) return false;
+        if (target.level().isClientSide) return false;
+        if (ICEProtocolItem.negatesQuickhack(target)) return false;
+        if (!hasValidCyberwareTarget(target)) return false;
 
         RandomSource random = target.getRandom();
         if (random.nextFloat() > SUCCESS_CHANCE) {
             return false;
         }
 
-        target.addEffect(new MobEffectInstance(ModEffects.OVERHEAT_HACK, DEFAULT_DURATION, DEFAULT_AMPLIFIER, false, false, true));
+        target.addEffect(new MobEffectInstance(
+                ModEffects.OVERHEAT_HACK,
+                DEFAULT_DURATION,
+                DEFAULT_AMPLIFIER,
+                false,
+                false,
+                true
+        ));
 
         return true;
     }
 
     private static boolean hasValidCyberwareTarget(LivingEntity target) {
-        if (!(target instanceof ServerPlayer player)) {
+        if (target instanceof ServerPlayer player) {
+            if (!player.hasData(ModAttachments.CYBERWARE)) {
+                return false;
+            }
+
+            PlayerCyberwareData data = player.getData(ModAttachments.CYBERWARE);
+            if (data == null) {
+                return false;
+            }
+
+            return data.hasAnyTagged(
+                    ModTags.Items.CYBERWARE_ITEM,
+                    CyberwareSlot.BRAIN,
+                    CyberwareSlot.EYES,
+                    CyberwareSlot.HEART,
+                    CyberwareSlot.LUNGS,
+                    CyberwareSlot.ORGANS,
+                    CyberwareSlot.BONE,
+                    CyberwareSlot.SKIN,
+                    CyberwareSlot.LARM,
+                    CyberwareSlot.RARM,
+                    CyberwareSlot.LLEG,
+                    CyberwareSlot.RLEG
+            );
+        }
+
+        if (!target.hasData(ModMobAttachments.CYBERENTITY_CYBERWARE)) {
             return false;
         }
 
-        if (!player.hasData(ModAttachments.CYBERWARE)) {
-            return false;
-        }
-
-        PlayerCyberwareData data = player.getData(ModAttachments.CYBERWARE);
+        EntityCyberwareData data = target.getData(ModMobAttachments.CYBERENTITY_CYBERWARE);
         if (data == null) {
             return false;
         }
@@ -78,23 +108,41 @@ public class OverheatQuickhackEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(LivingEntity entity, int amplifier) {
-        if (!(entity instanceof ServerPlayer player)) {
+        if (entity == null || entity.level().isClientSide) {
             return true;
         }
 
-        if (!player.hasData(ModAttachments.CYBERWARE)) {
+        entity.setRemainingFireTicks(Math.max(entity.getRemainingFireTicks(), FIRE_SECONDS * 20));
+
+        int drain = ENERGY_DRAIN_PER_TICK + (amplifier * 4);
+
+        if (entity instanceof ServerPlayer player) {
+            if (!player.hasData(ModAttachments.CYBERWARE)) {
+                return true;
+            }
+
+            PlayerCyberwareData data = player.getData(ModAttachments.CYBERWARE);
+            if (data == null) {
+                return true;
+            }
+
+            data.extractEnergy(drain);
+            data.setDirty();
+            player.syncData(ModAttachments.CYBERWARE);
             return true;
         }
 
-        PlayerCyberwareData data = player.getData(ModAttachments.CYBERWARE);
+        if (!entity.hasData(ModMobAttachments.CYBERENTITY_CYBERWARE)) {
+            return true;
+        }
+
+        EntityCyberwareData data = entity.getData(ModMobAttachments.CYBERENTITY_CYBERWARE);
         if (data == null) {
             return true;
         }
 
-        player.setRemainingFireTicks(Math.max(player.getRemainingFireTicks(), FIRE_SECONDS * 20));
-        data.extractEnergy(ENERGY_DRAIN_PER_TICK + (amplifier * 4));
+        data.extractEnergy(drain);
         data.setDirty();
-        player.syncData(ModAttachments.CYBERWARE);
 
         return true;
     }

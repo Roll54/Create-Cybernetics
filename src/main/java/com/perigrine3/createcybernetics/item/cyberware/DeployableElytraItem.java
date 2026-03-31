@@ -21,6 +21,7 @@ import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.Item;
@@ -63,13 +64,13 @@ public class DeployableElytraItem extends Item implements ICyberwareItem {
     }
 
     @Override
-    public int getEnergyActivationCost(Player player, ItemStack installedStack, CyberwareSlot slot) {
+    public int getEnergyActivationCost(LivingEntity entity, ItemStack installedStack, CyberwareSlot slot) {
         return ACTIVATION_COST;
     }
 
     @Override
-    public int getEnergyUsedPerTick(Player player, ItemStack installedStack, CyberwareSlot slot) {
-        return (player != null && player.isFallFlying()) ? GLIDE_COST_PER_TICK : 0;
+    public int getEnergyUsedPerTick(LivingEntity entity, ItemStack installedStack, CyberwareSlot slot) {
+        return (entity != null && entity.isFallFlying()) ? GLIDE_COST_PER_TICK : 0;
     }
 
     @Override
@@ -154,7 +155,7 @@ public class DeployableElytraItem extends Item implements ICyberwareItem {
 
         private static final class CyberState {
             final boolean installed;
-            final boolean active; // installed + enabled + powered
+            final boolean active;
             final ItemStack anyInstalledStack;
 
             private CyberState(boolean installed, boolean active, ItemStack anyInstalledStack) {

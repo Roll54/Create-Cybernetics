@@ -19,7 +19,7 @@ public class DrainQuickhackEffect extends MobEffect {
     private static final float SUCCESS_CHANCE = 0.75f;
 
     public DrainQuickhackEffect() {
-        super(MobEffectCategory.HARMFUL, 0xFF00C4B3);
+        super(MobEffectCategory.HARMFUL, 0xFF4AB3FF);
     }
 
     public static boolean applyQuickhack(LivingEntity target) {

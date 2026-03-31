@@ -449,7 +449,7 @@ public class CyberwareAttributeHelper {
 // EXOSUITS
         registerModifier("exosuit_strength", new AttributeModifierData(attackDamageAttribute,
                 ResourceLocation.fromNamespaceAndPath(CreateCybernetics.MODID, "exosuit_strength_add"),
-                4, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                1.5, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
         registerModifier("exosuit_knockback", new AttributeModifierData(attackKnockbackAttribute,
                 ResourceLocation.fromNamespaceAndPath(CreateCybernetics.MODID, "exosuit_knockback_add"),
                 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));

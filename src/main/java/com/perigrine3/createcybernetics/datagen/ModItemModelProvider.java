@@ -197,6 +197,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.BONEUPGRADES_BONEBATTERY.get());
         basicItem(ModItems.BONEUPGRADES_BONEFLEX.get());
         basicItem(ModItems.BONEUPGRADES_BONELACING.get());
+        basicItem(ModItems.BONEUPGRADES_CAPACITORFRAME.get());
 
             if (ModItems.BONEUPGRADES_ELYTRA != null) {
                 basicItem(ModItems.BONEUPGRADES_ELYTRA.get());
@@ -355,6 +356,7 @@ public class ModItemModelProvider extends ItemModelProvider {
             basicItem(ModItems.SCAVENGED_BONEBATTERY.get());
             basicItem(ModItems.SCAVENGED_BONEFLEX.get());
             basicItem(ModItems.SCAVENGED_BONELACING.get());
+            basicItem(ModItems.SCAVENGED_CAPACITORFRAME.get());
 
             if (ModItems.SCAVENGED_ELYTRA != null) {
                 basicItem(ModItems.SCAVENGED_ELYTRA.get());
@@ -376,6 +378,8 @@ public class ModItemModelProvider extends ItemModelProvider {
             basicItem(ModItems.SCAVENGED_CYBERDECK.get());
             basicItem(ModItems.SCAVENGED_IDEM.get());
             basicItem(ModItems.SCAVENGED_CHIPWARESLOTS.get());
+            basicItem(ModItems.SCAVENGED_ICEPROTOCOL.get());
+            basicItem(ModItems.SCAVENGED_NEURALPROCESSOR.get());
             basicItem(ModItems.SCAVENGED_CYBERHEART.get());
             basicItem(ModItems.SCAVENGED_COUPLER.get());
             basicItem(ModItems.SCAVENGED_CREEPERHEART.get());
@@ -406,6 +410,13 @@ public class ModItemModelProvider extends ItemModelProvider {
 
             if (ModItems.SCAVENGED_SWEAT != null) {
                 basicItem(ModItems.SCAVENGED_SWEAT.get());
+            }
+            if (ModItems.SCAVENGED_MANABATTERY != null &&
+                    ModItems.SCAVENGED_MANASKIN != null &&
+                    ModItems.SCAVENGED_SPELLJAMMER != null) {
+                basicItem(ModItems.SCAVENGED_MANABATTERY.get());
+                basicItem(ModItems.SCAVENGED_MANASKIN.get());
+                basicItem(ModItems.SCAVENGED_SPELLJAMMER.get());
             }
 
             basicItem(ModItems.SCAVENGED_SYNTHMUSCLE.get());

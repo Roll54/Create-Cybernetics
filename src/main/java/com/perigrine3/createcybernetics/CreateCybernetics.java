@@ -5,6 +5,7 @@ import com.perigrine3.createcybernetics.block.ModBlocks;
 import com.perigrine3.createcybernetics.block.entity.ModBlockEntities;
 import com.perigrine3.createcybernetics.common.attributes.ModAttributes;
 import com.perigrine3.createcybernetics.common.capabilities.ModAttachments;
+import com.perigrine3.createcybernetics.common.capabilities.ModMobAttachments;
 import com.perigrine3.createcybernetics.compat.CompatBootstrap;
 import com.perigrine3.createcybernetics.compat.ironsspells.IronsSpellbooksCastSuppressCompat;
 import com.perigrine3.createcybernetics.compat.ironsspells.IronsSpellbooksCyberwareAttributes;
@@ -90,6 +91,7 @@ public class CreateCybernetics {
         CompatBootstrap.bootstrap();
 
         ModAttachments.register(eventBus);
+        ModMobAttachments.register(eventBus);
         ModAttributes.register(eventBus);
     }
 

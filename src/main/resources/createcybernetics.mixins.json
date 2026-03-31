@@ -6,6 +6,7 @@
     "AbstractContainerMenuAccessor",
     "AbstractContainerMenuInvoker",
     "InventoryMenuChipwareSlotsMixin",
+    "LivingEntitySandevistanTrailMixin",
     "PlayerSprintWhileCrouchingMixin",
     "ProjectileInaccuracyMixin",
     "RaidMixin",

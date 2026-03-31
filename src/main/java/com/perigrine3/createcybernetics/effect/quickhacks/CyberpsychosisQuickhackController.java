@@ -34,7 +34,7 @@ public final class CyberpsychosisQuickhackController {
         }
 
         data.setDirty();
-        player.syncData(ModAttachments.CYBERWARE);
+        //player.syncData(ModAttachments.CYBERWARE);
     }
 
     @SubscribeEvent

@@ -7,7 +7,7 @@ import com.perigrine3.createcybernetics.util.CyberwareAttributeHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -56,21 +56,21 @@ public class NeuralProcessorItem extends Item implements ICyberwareItem {
     }
 
     @Override
-    public void onInstalled(Player player) {
-        CyberwareAttributeHelper.applyModifier(player, "neuralprocessor_learn");
-        CyberwareAttributeHelper.applyModifier(player, "neuralprocessor_insomnia");
-        CyberwareAttributeHelper.applyModifier(player, "neuralprocessor_speed");
+    public void onInstalled(LivingEntity entity) {
+        CyberwareAttributeHelper.applyModifier(entity, "neuralprocessor_learn");
+        CyberwareAttributeHelper.applyModifier(entity, "neuralprocessor_insomnia");
+        CyberwareAttributeHelper.applyModifier(entity, "neuralprocessor_speed");
     }
 
     @Override
-    public void onRemoved(Player player) {
-        CyberwareAttributeHelper.removeModifier(player, "neuralprocessor_learn");
-        CyberwareAttributeHelper.removeModifier(player, "neuralprocessor_insomnia");
-        CyberwareAttributeHelper.removeModifier(player, "neuralprocessor_speed");
+    public void onRemoved(LivingEntity entity) {
+        CyberwareAttributeHelper.removeModifier(entity, "neuralprocessor_learn");
+        CyberwareAttributeHelper.removeModifier(entity, "neuralprocessor_insomnia");
+        CyberwareAttributeHelper.removeModifier(entity, "neuralprocessor_speed");
     }
 
     @Override
-    public void onTick(Player player) {
+    public void onTick(LivingEntity entity) {
 
     }
 }
