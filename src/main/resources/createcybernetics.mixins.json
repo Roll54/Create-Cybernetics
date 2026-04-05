@@ -15,6 +15,8 @@
   "client": [
     "PlayerEyeHeightMixin",
     "client.AbstractContainerScreenAccessor",
+    "client.CorpseInventoryScreenMixin",
+    "client.CorpseRendererMixin",
     "client.CreativeModeInventoryChipwareButtonMixin",
     "client.CreativeSlotWrapperHideChipwareMixin",
     "client.InventoryScreenChipwareSlotsMixin",

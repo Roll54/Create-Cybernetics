@@ -86,6 +86,11 @@ public class SpinalInjectorItem extends Item implements ICyberwareItem {
         return Set.of();
     }
 
+    @Override
+    public Set<Item> requiresCyberware(ItemStack installedStack, CyberwareSlot slot) {
+        return Set.of(ModItems.BASECYBERWARE_LINEARFRAME.get());
+    }
+
     public static boolean isInjectable(ItemStack stack) {
         return !stack.isEmpty() && stack.is(Tags.Items.POTIONS);
     }

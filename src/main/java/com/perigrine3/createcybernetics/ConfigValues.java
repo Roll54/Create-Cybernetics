@@ -18,6 +18,9 @@ public final class ConfigValues {
     /** Surgery Damage Scaling. */
     public static boolean SURGERY_DAMAGE_SCALING = false;
 
+    /** Epilepsy Mode. */
+    public static boolean EPILEPSY_MODE = false;
+
     /** Engineering Table deconstruction rolls for regular cyberware. */
     public static List<EngineeringRoll> ENGINEERING_DECONSTRUCT_ROLLS = new ArrayList<>();
     /** Engineering Table deconstruction rolls for scavenged cyberware. */

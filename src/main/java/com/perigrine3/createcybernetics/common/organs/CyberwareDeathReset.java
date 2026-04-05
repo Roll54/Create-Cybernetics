@@ -12,6 +12,7 @@ import com.perigrine3.createcybernetics.common.capabilities.ModMobAttachments;
 import com.perigrine3.createcybernetics.common.capabilities.PlayerCyberwareData;
 import com.perigrine3.createcybernetics.common.surgery.DefaultOrgans;
 import com.perigrine3.createcybernetics.common.surgery.RobosurgeonSlotMap;
+import com.perigrine3.createcybernetics.compat.corpse.CorpseCompat;
 import com.perigrine3.createcybernetics.entity.ModEntities;
 import com.perigrine3.createcybernetics.item.ModItems;
 import com.perigrine3.createcybernetics.item.generic.XPCapsuleItem;
@@ -119,6 +120,11 @@ public final class CyberwareDeathReset {
     }
 
     private static void handlePlayerDeath(ServerPlayer player) {
+        if (CorpseCompat.capturePlayerDeathForCorpse(player)) {
+            CorpseCompat.syncPendingCorpseVisualSnapshotOnDeath(player);
+            return;
+        }
+
         if (player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
         if (ConfigValues.KEEP_CYBERWARE) return;
 
@@ -163,6 +169,7 @@ public final class CyberwareDeathReset {
         }
 
         dropChipwareShards(player, data);
+        dropCyberdeckShards(player, data);
 
         data.setDirty();
         player.syncData(ModAttachments.CYBERWARE);
@@ -303,6 +310,20 @@ public final class CyberwareDeathReset {
 
             player.spawnAtLocation(drop);
             data.setChipwareStack(i, ItemStack.EMPTY);
+        }
+    }
+
+    private static void dropCyberdeckShards(ServerPlayer player, PlayerCyberwareData data) {
+        for (int i = 0; i < PlayerCyberwareData.CYBERDECK_SLOT_COUNT; i++) {
+            ItemStack st = data.getCyberdeckStack(i);
+            if (st == null || st.isEmpty()) continue;
+            if (!st.is(ModTags.Items.QUICKHACK_SHARDS)) continue;
+
+            ItemStack drop = st.copy();
+            drop.setCount(1);
+
+            player.spawnAtLocation(drop);
+            data.setCyberdeckStack(i, ItemStack.EMPTY);
         }
     }
 

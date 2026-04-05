@@ -1,6 +1,7 @@
 package com.perigrine3.createcybernetics.screen;
 
 import com.perigrine3.createcybernetics.CreateCybernetics;
+import com.perigrine3.createcybernetics.compat.corpse.CorpseCyberwareMenu;
 import com.perigrine3.createcybernetics.screen.custom.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.AbstractContainerMenu;

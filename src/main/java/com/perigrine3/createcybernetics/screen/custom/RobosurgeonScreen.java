@@ -5,6 +5,7 @@ import com.perigrine3.createcybernetics.CreateCybernetics;
 import com.perigrine3.createcybernetics.api.CyberwareSlot;
 import com.perigrine3.createcybernetics.api.ICyberwareItem;
 import com.perigrine3.createcybernetics.api.InstalledCyberware;
+import com.perigrine3.createcybernetics.client.render.RobosurgeonPreviewOverlayContext;
 import com.perigrine3.createcybernetics.common.capabilities.ModAttachments;
 import com.perigrine3.createcybernetics.common.capabilities.PlayerCyberwareData;
 import com.perigrine3.createcybernetics.common.surgery.RobosurgeonSlotMap;
@@ -28,6 +29,7 @@ import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.joml.Quaternionf;
@@ -90,6 +92,27 @@ public class RobosurgeonScreen extends AbstractContainerScreen<RobosurgeonMenu> 
     private static final ResourceLocation WARNING_ICON =
             ResourceLocation.fromNamespaceAndPath(CreateCybernetics.MODID,
                     "textures/gui/robosurgeon/robosurgeon_interface_warning.png");
+
+    private static final ResourceLocation LINEAR_FRAME = ResourceLocation.fromNamespaceAndPath(CreateCybernetics.MODID,
+                    "textures/gui/robosurgeon/linear_frame_robosurgeonoverlay.png");
+    private static final ResourceLocation TITANIUM_SKULL = ResourceLocation.fromNamespaceAndPath(CreateCybernetics.MODID,
+                    "textures/gui/robosurgeon/titanium_skull_robosurgeonoverlay.png");
+    private static final ResourceLocation CAPACITOR_FRAME = ResourceLocation.fromNamespaceAndPath(CreateCybernetics.MODID,
+                    "textures/gui/robosurgeon/capacitor_frame_robosurgeonoverlay.png");
+    private static final ResourceLocation MARROW_BATTERY = ResourceLocation.fromNamespaceAndPath(CreateCybernetics.MODID,
+                    "textures/gui/robosurgeon/marrow_battery_robosurgeonoverlay.png");
+    private static final ResourceLocation BONELACING = ResourceLocation.fromNamespaceAndPath(CreateCybernetics.MODID,
+                    "textures/gui/robosurgeon/bonelacing_robosurgeonoverlay.png");
+    private static final ResourceLocation BONEFLEX = ResourceLocation.fromNamespaceAndPath(CreateCybernetics.MODID,
+                    "textures/gui/robosurgeon/boneflex_robosurgeonoverlay.png");
+    private static final ResourceLocation PIEZO = ResourceLocation.fromNamespaceAndPath(CreateCybernetics.MODID,
+                    "textures/gui/robosurgeon/piezo_robosurgeonoverlay.png");
+    private static final ResourceLocation DEPLOYABLE_ELYTRA = ResourceLocation.fromNamespaceAndPath(CreateCybernetics.MODID,
+                    "textures/gui/robosurgeon/deployable_elytra_robosurgeonoverlay.png");
+    private static final ResourceLocation SANDEVISTAN = ResourceLocation.fromNamespaceAndPath(CreateCybernetics.MODID,
+                    "textures/gui/robosurgeon/sandevistan_robosurgeonoverlay.png");
+    private static final ResourceLocation SPINAL_INJECTOR = ResourceLocation.fromNamespaceAndPath(CreateCybernetics.MODID,
+                    "textures/gui/robosurgeon/spinal_injector_robosurgeonoverlay.png");
 
     // -----------------------
     // toggle buttons
@@ -914,70 +937,116 @@ public class RobosurgeonScreen extends AbstractContainerScreen<RobosurgeonMenu> 
         this.renderTooltip(gui, mouseX, mouseY);
     }
 
-    private void renderHeadModeFade(GuiGraphics gui, int x, int y, int scale, float fade) {
-        Quaternionf spin = new Quaternionf()
-                .rotateX((float)Math.toRadians(180))
-                .rotateY((float)Math.toRadians(25));
+    private boolean hasInstalledCyberware(Item item, CyberwareSlot... slots) {
+        Player player = minecraft.player;
+        if (player == null) return false;
 
+        PlayerCyberwareData data = player.getData(ModAttachments.CYBERWARE);
+        return data != null && data.hasSpecificItem(item, slots);
+    }
+
+    private void addInstalledOverlay(List<RobosurgeonPreviewOverlayContext.Entry> overlays,
+                                     ResourceLocation texture,
+                                     float fade,
+                                     Item item,
+                                     CyberwareSlot... slots) {
+        if (texture == null || item == null || fade <= 0f) return;
+        if (!hasInstalledCyberware(item, slots)) return;
+
+        overlays.add(RobosurgeonPreviewOverlayContext.entry(texture, fade));
+    }
+
+    private List<RobosurgeonPreviewOverlayContext.Entry> collectBoneOverlays(float fade) {
+        List<RobosurgeonPreviewOverlayContext.Entry> overlays = new ArrayList<>();
+        if (fade <= 0f) return overlays;
+
+        addInstalledOverlay(overlays, LINEAR_FRAME, fade,
+                ModItems.BASECYBERWARE_LINEARFRAME.get(), CyberwareSlot.BONE);
+
+        addInstalledOverlay(overlays, TITANIUM_SKULL, fade,
+                ModItems.BONEUPGRADES_CYBERSKULL.get(), CyberwareSlot.BONE);
+
+        addInstalledOverlay(overlays, CAPACITOR_FRAME, fade,
+                ModItems.BONEUPGRADES_CAPACITORFRAME.get(), CyberwareSlot.BONE);
+
+        addInstalledOverlay(overlays, MARROW_BATTERY, fade,
+                ModItems.BONEUPGRADES_BONEBATTERY.get(), CyberwareSlot.BONE);
+
+        addInstalledOverlay(overlays, BONELACING, fade,
+                ModItems.BONEUPGRADES_BONELACING.get(), CyberwareSlot.BONE);
+
+        addInstalledOverlay(overlays, BONEFLEX, fade,
+                ModItems.BONEUPGRADES_BONEFLEX.get(), CyberwareSlot.BONE);
+
+        addInstalledOverlay(overlays, PIEZO, fade,
+                ModItems.BONEUPGRADES_PIEZO.get(), CyberwareSlot.BONE);
+
+        addInstalledOverlay(overlays, SPINAL_INJECTOR, fade,
+                ModItems.BONEUPGRADES_SPINALINJECTOR.get(), CyberwareSlot.BONE);
+
+        addInstalledOverlay(overlays, SANDEVISTAN, fade,
+                ModItems.BONEUPGRADES_SANDEVISTAN.get(), CyberwareSlot.BONE);
+
+        if (ModItems.BONEUPGRADES_ELYTRA.get() != null) {
+            addInstalledOverlay(overlays, DEPLOYABLE_ELYTRA, fade,
+                    ModItems.BONEUPGRADES_ELYTRA.get(), CyberwareSlot.BONE);
+        }
+
+        return overlays;
+    }
+
+    private void renderSkeletonPreviewWithOverlays(GuiGraphics gui, int x, int y, int scale,
+                                                   Quaternionf spin,
+                                                   List<RobosurgeonPreviewOverlayContext.Entry> overlays) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        InventoryScreen.renderEntityInInventory(gui, x, y, scale, new Vector3f(), spin, null, skeletonPreview);
-        RenderSystem.disableBlend();
+
+        RobosurgeonPreviewOverlayContext.begin(skeletonPreview, overlays);
+
+        try {
+            InventoryScreen.renderEntityInInventory(
+                    gui, x, y, scale,
+                    new Vector3f(),
+                    spin,
+                    null,
+                    skeletonPreview
+            );
+        } finally {
+            RobosurgeonPreviewOverlayContext.end();
+            RenderSystem.disableBlend();
+        }
+    }
+
+    private void renderBoneOverlayModeFade(GuiGraphics gui, int x, int y, int scale, float fade) {
+        Quaternionf spin = new Quaternionf()
+                .rotateX((float) Math.toRadians(180))
+                .rotateY((float) Math.toRadians(25));
+
+        renderSkeletonPreviewWithOverlays(gui, x, y, scale, spin, collectBoneOverlays(fade));
+    }
+
+    private void renderHeadModeFade(GuiGraphics gui, int x, int y, int scale, float fade) {
+        renderBoneOverlayModeFade(gui, x, y, scale, fade);
     }
 
     private void renderTorsoModeFade(GuiGraphics gui, int x, int y, int scale, float fade) {
-        Quaternionf spin = new Quaternionf()
-                .rotateX((float)Math.toRadians(180))
-                .rotateY((float)Math.toRadians(25));
-
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        InventoryScreen.renderEntityInInventory(gui, x, y, scale, new Vector3f(), spin, null, skeletonPreview);
-        RenderSystem.disableBlend();
+        renderBoneOverlayModeFade(gui, x, y, scale, fade);
     }
 
     private void renderRightArmModeFade(GuiGraphics gui, int x, int y, int scale, float fade) {
-        Quaternionf spin = new Quaternionf()
-                .rotateX((float)Math.toRadians(180))
-                .rotateY((float)Math.toRadians(25));
-
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        InventoryScreen.renderEntityInInventory(gui, x, y, scale, new Vector3f(), spin, null, skeletonPreview);
-        RenderSystem.disableBlend();
+        renderBoneOverlayModeFade(gui, x, y, scale, fade);
     }
 
     private void renderLeftArmModeFade(GuiGraphics gui, int x, int y, int scale, float fade) {
-        Quaternionf spin = new Quaternionf()
-                .rotateX((float)Math.toRadians(180))
-                .rotateY((float)Math.toRadians(25));
-
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        InventoryScreen.renderEntityInInventory(gui, x, y, scale, new Vector3f(), spin, null, skeletonPreview);
-        RenderSystem.disableBlend();
+        renderBoneOverlayModeFade(gui, x, y, scale, fade);
     }
 
     private void renderRightLegModeFade(GuiGraphics gui, int x, int y, int scale, float fade) {
-        Quaternionf spin = new Quaternionf()
-                .rotateX((float)Math.toRadians(180))
-                .rotateY((float)Math.toRadians(25));
-
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        InventoryScreen.renderEntityInInventory(gui, x, y, scale, new Vector3f(), spin, null, skeletonPreview);
-        RenderSystem.disableBlend();
+        renderBoneOverlayModeFade(gui, x, y, scale, fade);
     }
 
     private void renderLeftLegModeFade(GuiGraphics gui, int x, int y, int scale, float fade) {
-        Quaternionf spin = new Quaternionf()
-                .rotateX((float)Math.toRadians(180))
-                .rotateY((float)Math.toRadians(25));
-
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        InventoryScreen.renderEntityInInventory(gui, x, y, scale, new Vector3f(), spin, null, skeletonPreview);
-        RenderSystem.disableBlend();
+        renderBoneOverlayModeFade(gui, x, y, scale, fade);
     }
 
     private void renderSkinModeFade(GuiGraphics gui, int x, int y, int scale, float fade) {

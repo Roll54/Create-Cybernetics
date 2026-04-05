@@ -210,6 +210,18 @@ public final class ModPayloads {
                 (payload, ctx) -> ctx.enqueueWork(() -> BehindYouSoundPayload.handle(payload))
         );
 
+        r.playToServer(
+                com.perigrine3.createcybernetics.compat.corpse.OpenCorpseCyberwarePayload.TYPE,
+                com.perigrine3.createcybernetics.compat.corpse.OpenCorpseCyberwarePayload.STREAM_CODEC,
+                com.perigrine3.createcybernetics.compat.corpse.OpenCorpseCyberwarePayload::handle
+        );
+
+        r.playToClient(
+                com.perigrine3.createcybernetics.compat.corpse.CorpseVisualSnapshotPayload.TYPE,
+                com.perigrine3.createcybernetics.compat.corpse.CorpseVisualSnapshotPayload.STREAM_CODEC,
+                com.perigrine3.createcybernetics.compat.corpse.CorpseVisualSnapshotPayload::handle
+        );
+
         // ---------------- CYBEREYE IRIS LAYOUT SYNC ----------------
 
 // Client -> Server

@@ -32,6 +32,11 @@ public class Config {
             .comment("If false, the surgery chamber will apply 10 damage.")
             .define("scaleSurgeryDamage", false);
 
+        public static final ModConfigSpec.BooleanValue EPILEPSY_MODE = BUILDER
+            .comment("Epilepsy Mode")
+            .comment("Activate this to disable the cyberware rejection overlay. Good if you or a friend has epilepsy.")
+            .define("epilepsyMode", false);
+
     public static final ModConfigSpec.ConfigValue<List<? extends String>> ENGINEERING_DECONSTRUCT_ROLLS = BUILDER
             .comment("Engineering Table deconstruction rolls for regular cyberware.")
             .comment("Format per entry: item_id,min,max,weight")

@@ -109,6 +109,7 @@ public class ModItems {
                 public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
                     tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_overheat.desc").withStyle(ChatFormatting.GRAY));
                     tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_overheat.desc2").withStyle(ChatFormatting.LIGHT_PURPLE));
+                    tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_overheat.desc3").withStyle(ChatFormatting.AQUA));
                     super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
                 }});
     public static final DeferredItem<Item> QUICKHACK_REBOOT = ITEMS.register("quickhack_reboot",
@@ -117,6 +118,7 @@ public class ModItems {
                 public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
                     tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_reboot.desc").withStyle(ChatFormatting.GRAY));
                     tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_reboot.desc2").withStyle(ChatFormatting.LIGHT_PURPLE));
+                    tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_reboot.desc3").withStyle(ChatFormatting.AQUA));
                     super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
                 }});
     public static final DeferredItem<Item> QUICKHACK_SCRAMBLE = ITEMS.register("quickhack_scramble",
@@ -125,6 +127,7 @@ public class ModItems {
                 public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
                     tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_scramble.desc").withStyle(ChatFormatting.GRAY));
                     tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_scramble.desc2").withStyle(ChatFormatting.LIGHT_PURPLE));
+                    tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_scramble.desc3").withStyle(ChatFormatting.AQUA));
                     super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
                 }});
     public static final DeferredItem<Item> QUICKHACK_OPTICMALFUNCTION = ITEMS.register("quickhack_opticmalfunction",
@@ -133,6 +136,7 @@ public class ModItems {
                 public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
                     tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_opticmalfunction.desc").withStyle(ChatFormatting.GRAY));
                     tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_opticmalfunction.desc2").withStyle(ChatFormatting.LIGHT_PURPLE));
+                    tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_opticmalfunction.desc3").withStyle(ChatFormatting.AQUA));
                     super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
                 }});
     public static final DeferredItem<Item> QUICKHACK_CYBERPSYCHOSIS = ITEMS.register("quickhack_cyberpsychosis",
@@ -141,6 +145,7 @@ public class ModItems {
                 public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
                     tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_cyberpsychosis.desc").withStyle(ChatFormatting.GRAY));
                     tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_cyberpsychosis.desc2").withStyle(ChatFormatting.LIGHT_PURPLE));
+                    tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_cyberpsychosis.desc3").withStyle(ChatFormatting.AQUA));
                     super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
                 }});
     public static final DeferredItem<Item> QUICKHACK_BEHINDYOU = ITEMS.register("quickhack_behindyou",
@@ -149,6 +154,7 @@ public class ModItems {
                 public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
                     tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_behindyou.desc").withStyle(ChatFormatting.GRAY));
                     tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_behindyou.desc2").withStyle(ChatFormatting.LIGHT_PURPLE));
+                    tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_behindyou.desc3").withStyle(ChatFormatting.AQUA));
                     super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
                 }});
     public static final DeferredItem<Item> QUICKHACK_DRAIN = ITEMS.register("quickhack_drain",
@@ -157,6 +163,7 @@ public class ModItems {
                 public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
                     tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_drain.desc").withStyle(ChatFormatting.GRAY));
                     tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_drain.desc2").withStyle(ChatFormatting.LIGHT_PURPLE));
+                    tooltipComponents.add(Component.translatable("item.createcybernetics.quickhack_drain.desc3").withStyle(ChatFormatting.AQUA));
                     super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
                 }});
 
@@ -1516,6 +1523,11 @@ public class ModItems {
                     tooltipComponents.add(Component.translatable("tooltip.createcybernetics.brainupgrade_tooltip"));
                     tooltipComponents.add(Component.translatable("tooltip.createcybernetics.brainupgrades_cyberdeck.tooltip1"));
                     tooltipComponents.add(Component.translatable("tooltip.createcybernetics.brainupgrades_cyberdeck.tooltip2"));
+
+                    Component invKey = ModKeyMappings.CYBERDECK.get().getTranslatedKeyMessage();
+                    Component wheelKey = ModKeyMappings.CYBERDECK_WHEEL.get().getTranslatedKeyMessage();
+                    tooltipComponents.add(Component.translatable("tooltip.createcybernetics.brainupgrades_cyberdeck.desc1", invKey));
+                    tooltipComponents.add(Component.translatable("tooltip.createcybernetics.brainupgrades_cyberdeck.desc2", wheelKey));
                 } else {
                     tooltipComponents.add(Component.translatable("tooltip.createcybernetics.brainupgrade_tooltip"));
                     tooltipComponents.add(Component.translatable("tooltip.createcybernetics.hold_shift_down"));

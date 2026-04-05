@@ -120,7 +120,8 @@ public final class MissingOrganController {
         /* -------------------- LUNGS -------------------- */
         boolean hasGills = data.hasSpecificItem(ModItems.WETWARE_WATERBREATHINGLUNGS.get(), CyberwareSlot.LUNGS);
         boolean inWater = player.isUnderWater() || player.isInWaterOrRain();
-        boolean canBreathe = (hasLungs && !inWater) ||          // normal lungs on land
+        boolean underWater = player.isUnderWater();
+        boolean canBreathe = (hasLungs && !underWater) ||       // normal lungs on land
                              (hasGills && inWater) ||           // gills in water
                              (hasLungs && hasGills);            // both = always
 

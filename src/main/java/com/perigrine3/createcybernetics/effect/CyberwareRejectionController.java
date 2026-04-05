@@ -17,7 +17,6 @@ public final class CyberwareRejectionController {
     private static final float THRESHOLD_PERCENT = 0.25f;
     private static final int REFRESH_EVERY_TICKS = 20;
     private static final int DURATION = 200;
-    private static final int NEUROPOZYNE_HUMANITY_PER_LEVEL = 25;
 
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
@@ -28,15 +27,14 @@ public final class CyberwareRejectionController {
         PlayerCyberwareData data = player.getData(ModAttachments.CYBERWARE);
         if (data == null) return;
 
-        int neuroBonus = getNeuropozyneBonus(player);
-
-        int currentHumanity = data.getHumanity() + neuroBonus;
-        int maxHumanity = Math.max(1, ConfigValues.BASE_HUMANITY + data.getHumanityBonus() + neuroBonus);
+        int currentHumanity = data.getHumanity();
+        int maxHumanity = Math.max(1, ConfigValues.BASE_HUMANITY);
         int thresholdHumanity = Mth.ceil(maxHumanity * THRESHOLD_PERCENT);
 
-        if (currentHumanity <= thresholdHumanity) {
+        if (currentHumanity < thresholdHumanity) {
             MobEffectInstance existing = player.getEffect(ModEffects.CYBERWARE_REJECTION);
             int amp = existing != null ? existing.getAmplifier() : 0;
+
             player.addEffect(new MobEffectInstance(
                     ModEffects.CYBERWARE_REJECTION,
                     DURATION,
@@ -48,12 +46,6 @@ public final class CyberwareRejectionController {
         } else {
             player.removeEffect(ModEffects.CYBERWARE_REJECTION);
         }
-    }
-
-    private static int getNeuropozyneBonus(Player player) {
-        MobEffectInstance inst = player.getEffect(ModEffects.NEUROPOZYNE);
-        if (inst == null) return 0;
-        return (inst.getAmplifier() + 1) * NEUROPOZYNE_HUMANITY_PER_LEVEL;
     }
 
     private CyberwareRejectionController() {}
