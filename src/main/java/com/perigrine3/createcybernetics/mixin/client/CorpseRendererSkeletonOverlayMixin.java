@@ -119,7 +119,7 @@ public abstract class CorpseRendererSkeletonOverlayMixin {
         createcybernetics$applyCorpseTransforms(entity, matrixStack);
         matrixStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
         matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));
-        matrixStack.translate(0.0D, -1.5D, 0.0D);
+        matrixStack.translate(0.0D, -1.501D, 0.0D);
         matrixStack.scale(1.001F, 1.001F, 1.001F);
         SkeletonCorpseOverlayRenderer.render(castModel, data, matrixStack, buffer, packedLightIn);
         matrixStack.popPose();

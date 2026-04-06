@@ -47,11 +47,6 @@ public class TitaniumSkullItem extends Item implements ICyberwareItem {
     }
 
     @Override
-    public Set<Item> requiresCyberware(ItemStack installedStack, CyberwareSlot slot) {
-        return Set.of(ModItems.BASECYBERWARE_LINEARFRAME.get());
-    }
-
-    @Override
     public Set<CyberwareSlot> getSupportedSlots() {
         return Set.of(CyberwareSlot.BONE);
     }

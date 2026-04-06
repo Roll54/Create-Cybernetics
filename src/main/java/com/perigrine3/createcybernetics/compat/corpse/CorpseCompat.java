@@ -10,6 +10,8 @@ import com.perigrine3.createcybernetics.common.capabilities.PlayerCyberwareData;
 import com.perigrine3.createcybernetics.common.surgery.DefaultOrgans;
 import com.perigrine3.createcybernetics.common.surgery.RobosurgeonSlotMap;
 import com.perigrine3.createcybernetics.item.ModItems;
+import com.perigrine3.createcybernetics.item.cyberware.ArmCannonItem;
+import com.perigrine3.createcybernetics.item.cyberware.SpinalInjectorItem;
 import com.perigrine3.createcybernetics.item.generic.XPCapsuleItem;
 import com.perigrine3.createcybernetics.util.ModTags;
 import net.minecraft.core.HolderLookup;
@@ -18,6 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -80,10 +83,9 @@ public final class CorpseCompat {
         CorpseCyberwareData corpseData = new CorpseCyberwareData();
         corpseData.captureFromPlayer(player, provider);
 
-        NonNullList<ItemStack> stored = buildStoredCyberwareList(player, data);
+        NonNullList<ItemStack> stored = buildStoredCyberwareList(player, data, provider);
 
         PENDING.put(player.getUUID(), new PendingCorpseData(corpseData, stored));
-
         return true;
     }
 
@@ -278,7 +280,7 @@ public final class CorpseCompat {
         persistent.put(ROOT_TAG, root);
     }
 
-    private static NonNullList<ItemStack> buildStoredCyberwareList(ServerPlayer player, PlayerCyberwareData data) {
+    private static NonNullList<ItemStack> buildStoredCyberwareList(ServerPlayer player, PlayerCyberwareData data, HolderLookup.Provider provider) {
         NonNullList<ItemStack> stored = NonNullList.withSize(CYBERWARE_SLOT_COUNT, ItemStack.EMPTY);
 
         boolean hadCorticalStack = hasCorticalStackInstalled(player);
@@ -310,7 +312,8 @@ public final class CorpseCompat {
                     capsuleStored = true;
                 }
 
-                putFirstEmpty(stored, effective.copy());
+                ItemStack sanitized = sanitizeStoredInventoryNbtForCorpse(effective, provider);
+                putFirstEmpty(stored, sanitized);
             }
         }
 
@@ -334,7 +337,90 @@ public final class CorpseCompat {
             putFirstEmpty(stored, drop);
         }
 
+        for (int i = 0; i < SpinalInjectorItem.SLOT_COUNT; i++) {
+            ItemStack st = data.getSpinalInjectorStack(i);
+            if (st == null || st.isEmpty()) continue;
+
+            putFirstEmpty(stored, st.copy());
+        }
+
+        boolean addedArmCannonFromPlayerData = false;
+        for (int i = 0; i < ArmCannonItem.SLOT_COUNT; i++) {
+            ItemStack st = data.getArmCannonStack(i);
+            if (st == null || st.isEmpty()) continue;
+
+            putFirstEmpty(stored, st.copy());
+            addedArmCannonFromPlayerData = true;
+        }
+
+        if (!addedArmCannonFromPlayerData) {
+            ItemStack installedArmCannon = getInstalledArmCannonStack(player);
+            if (!installedArmCannon.isEmpty()) {
+                SimpleContainer temp = new SimpleContainer(ArmCannonItem.SLOT_COUNT);
+                ArmCannonItem.loadFromInstalledStack(installedArmCannon, provider, temp);
+
+                for (int i = 0; i < ArmCannonItem.SLOT_COUNT; i++) {
+                    ItemStack st = temp.getItem(i);
+                    if (st == null || st.isEmpty()) continue;
+
+                    putFirstEmpty(stored, st.copy());
+                }
+            }
+        }
+
+        for (int i = 0; i < PlayerCyberwareData.HEAT_ENGINE_SLOT_COUNT; i++) {
+            ItemStack st = data.getHeatEngineStack(i);
+            if (st == null || st.isEmpty()) continue;
+
+            putFirstEmpty(stored, st.copy());
+        }
+
         return stored;
+    }
+
+    private static ItemStack getInstalledArmCannonStack(ServerPlayer player) {
+        PlayerCyberwareData data = player.getData(ModAttachments.CYBERWARE);
+        if (data == null) return ItemStack.EMPTY;
+
+        for (CyberwareSlot slot : CyberwareSlot.values()) {
+            InstalledCyberware[] arr = data.getAll().get(slot);
+            if (arr == null) continue;
+
+            for (InstalledCyberware inst : arr) {
+                if (inst == null) continue;
+
+                ItemStack st = inst.getItem();
+                if (st == null || st.isEmpty()) continue;
+
+                if (ModItems.ARMUPGRADES_ARMCANNON != null && st.is(ModItems.ARMUPGRADES_ARMCANNON.get())) {
+                    return st;
+                }
+            }
+        }
+
+        return ItemStack.EMPTY;
+    }
+
+    private static ItemStack sanitizeStoredInventoryNbtForCorpse(ItemStack stack, HolderLookup.Provider provider) {
+        if (stack == null || stack.isEmpty()) return ItemStack.EMPTY;
+
+        ItemStack copy = stack.copy();
+        copy.setCount(1);
+
+        if (copy.is(ModItems.BONEUPGRADES_SPINALINJECTOR.get())) {
+            SimpleContainer empty = new SimpleContainer(SpinalInjectorItem.SLOT_COUNT);
+            int[] counts = new int[SpinalInjectorItem.SLOT_COUNT];
+            SpinalInjectorItem.saveIntoInstalledStack(copy, provider, empty, counts);
+            return copy;
+        }
+
+        if (copy.is(ModItems.ARMUPGRADES_ARMCANNON.get())) {
+            SimpleContainer empty = new SimpleContainer(ArmCannonItem.SLOT_COUNT);
+            ArmCannonItem.saveIntoInstalledStack(copy, provider, empty);
+            return copy;
+        }
+
+        return copy;
     }
 
     private static void putFirstEmpty(NonNullList<ItemStack> items, ItemStack stack) {

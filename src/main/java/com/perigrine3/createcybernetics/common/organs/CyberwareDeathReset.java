@@ -15,6 +15,8 @@ import com.perigrine3.createcybernetics.common.surgery.RobosurgeonSlotMap;
 import com.perigrine3.createcybernetics.compat.corpse.CorpseCompat;
 import com.perigrine3.createcybernetics.entity.ModEntities;
 import com.perigrine3.createcybernetics.item.ModItems;
+import com.perigrine3.createcybernetics.item.cyberware.ArmCannonItem;
+import com.perigrine3.createcybernetics.item.cyberware.SpinalInjectorItem;
 import com.perigrine3.createcybernetics.item.generic.XPCapsuleItem;
 import com.perigrine3.createcybernetics.network.payload.CybereyeIrisSyncS2CPayload;
 import com.perigrine3.createcybernetics.util.ModTags;
@@ -23,6 +25,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -120,27 +123,31 @@ public final class CyberwareDeathReset {
     }
 
     private static void handlePlayerDeath(ServerPlayer player) {
-        if (CorpseCompat.capturePlayerDeathForCorpse(player)) {
-            CorpseCompat.syncPendingCorpseVisualSnapshotOnDeath(player);
-            return;
-        }
-
         if (player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
         if (ConfigValues.KEEP_CYBERWARE) return;
 
         PlayerCyberwareData data = player.getData(ModAttachments.CYBERWARE);
         if (data == null) return;
 
+        if (CorpseCompat.capturePlayerDeathForCorpse(player)) {
+            CorpseCompat.syncPendingCorpseVisualSnapshotOnDeath(player);
+            return;
+        }
+
         boolean hadCorticalStack = hasCorticalStackInstalled(player);
         int xpPoints = hadCorticalStack ? getTotalXpPoints(player) : 0;
         boolean capsuleDropped = false;
+
+        HolderLookup.Provider provider = player.registryAccess();
 
         for (CyberwareSlot slot : CyberwareSlot.values()) {
             int mappedSize = RobosurgeonSlotMap.mappedSize(slot);
 
             for (int i = 0; i < mappedSize; i++) {
                 InstalledCyberware installed = data.get(slot, i);
-                ItemStack installedStack = (installed != null && installed.getItem() != null) ? installed.getItem() : ItemStack.EMPTY;
+                ItemStack installedStack = (installed != null && installed.getItem() != null)
+                        ? installed.getItem()
+                        : ItemStack.EMPTY;
 
                 ItemStack def = DefaultOrgans.get(slot, i);
                 if (def == null) def = ItemStack.EMPTY;
@@ -148,29 +155,36 @@ public final class CyberwareDeathReset {
                 ItemStack effective = !installedStack.isEmpty() ? installedStack : def;
                 if (effective.isEmpty()) continue;
 
-                if (ModItems.BRAINUPGRADES_CORTICALSTACK != null) {
-                    if (effective.is(ModItems.BRAINUPGRADES_CORTICALSTACK.get())) {
-                        if (hadCorticalStack && !capsuleDropped) {
-                            String ownerName = player.getGameProfile().getName();
-                            ItemStack capsule = XPCapsuleItem.makeCapsule(ownerName, xpPoints);
-                            player.spawnAtLocation(capsule);
-                            capsuleDropped = true;
-                        }
-                        if (!shouldDropInstalledOnDeath(effective, slot)) continue;
-                        player.spawnAtLocation(effective.copy());
-                        continue;
+                if (ModItems.BRAINUPGRADES_CORTICALSTACK != null
+                        && effective.is(ModItems.BRAINUPGRADES_CORTICALSTACK.get())) {
+                    if (hadCorticalStack && !capsuleDropped) {
+                        String ownerName = player.getGameProfile().getName();
+                        ItemStack capsule = XPCapsuleItem.makeCapsule(ownerName, xpPoints);
+                        player.spawnAtLocation(capsule);
+                        capsuleDropped = true;
                     }
+
+                    if (!shouldDropInstalledOnDeath(effective, slot)) continue;
+
+                    ItemStack drop = sanitizeStoredInventoryNbtForDeathDrop(effective, provider);
+                    player.spawnAtLocation(drop);
+                    continue;
                 }
 
                 if (shouldDropInstalledOnDeath(effective, slot)) {
-                    player.spawnAtLocation(effective.copy());
+                    ItemStack drop = sanitizeStoredInventoryNbtForDeathDrop(effective, provider);
+                    player.spawnAtLocation(drop);
                 }
             }
         }
 
         dropChipwareShards(player, data);
         dropCyberdeckShards(player, data);
+        dropSpinalInjectorInventory(player, data);
+        dropArmCannonInventory(player, data);
+        dropHeatEngineInventory(player, data);
 
+        clearTransferredStoredInventories(data);
         data.setDirty();
         player.syncData(ModAttachments.CYBERWARE);
     }
@@ -324,6 +338,130 @@ public final class CyberwareDeathReset {
 
             player.spawnAtLocation(drop);
             data.setCyberdeckStack(i, ItemStack.EMPTY);
+        }
+    }
+
+    private static void dropSpinalInjectorInventory(ServerPlayer player, PlayerCyberwareData data) {
+        for (int i = 0; i < SpinalInjectorItem.SLOT_COUNT; i++) {
+            ItemStack st = data.getSpinalInjectorStack(i);
+            if (st == null || st.isEmpty()) continue;
+
+            player.spawnAtLocation(st.copy());
+            data.setSpinalInjectorStack(i, ItemStack.EMPTY);
+        }
+    }
+
+    private static void dropArmCannonInventory(ServerPlayer player, PlayerCyberwareData data) {
+        boolean droppedAny = false;
+
+        for (int i = 0; i < ArmCannonItem.SLOT_COUNT; i++) {
+            ItemStack st = data.getArmCannonStack(i);
+            if (st == null || st.isEmpty()) continue;
+
+            player.spawnAtLocation(st.copy());
+            data.setArmCannonStack(i, ItemStack.EMPTY);
+            droppedAny = true;
+        }
+
+        if (droppedAny) {
+            clearInstalledArmCannonNbt(player);
+            return;
+        }
+
+        ItemStack installedArmCannon = getInstalledArmCannonStack(player);
+        if (installedArmCannon.isEmpty()) return;
+
+        SimpleContainer temp = new SimpleContainer(ArmCannonItem.SLOT_COUNT);
+        ArmCannonItem.loadFromInstalledStack(installedArmCannon, player.registryAccess(), temp);
+
+        for (int i = 0; i < ArmCannonItem.SLOT_COUNT; i++) {
+            ItemStack st = temp.getItem(i);
+            if (st == null || st.isEmpty()) continue;
+
+            player.spawnAtLocation(st.copy());
+            temp.setItem(i, ItemStack.EMPTY);
+        }
+
+        ArmCannonItem.saveIntoInstalledStack(installedArmCannon, player.registryAccess(), temp);
+
+        for (int i = 0; i < ArmCannonItem.SLOT_COUNT; i++) {
+            data.setArmCannonStack(i, ItemStack.EMPTY);
+        }
+    }
+
+    private static void dropHeatEngineInventory(ServerPlayer player, PlayerCyberwareData data) {
+        for (int i = 0; i < PlayerCyberwareData.HEAT_ENGINE_SLOT_COUNT; i++) {
+            ItemStack st = data.getHeatEngineStack(i);
+            if (st == null || st.isEmpty()) continue;
+
+            player.spawnAtLocation(st.copy());
+            data.setHeatEngineStack(i, ItemStack.EMPTY);
+        }
+    }
+
+    private static ItemStack getInstalledArmCannonStack(ServerPlayer player) {
+        PlayerCyberwareData data = player.getData(ModAttachments.CYBERWARE);
+        if (data == null) return ItemStack.EMPTY;
+
+        for (CyberwareSlot slot : CyberwareSlot.values()) {
+            InstalledCyberware[] arr = data.getAll().get(slot);
+            if (arr == null) continue;
+
+            for (InstalledCyberware inst : arr) {
+                if (inst == null) continue;
+
+                ItemStack st = inst.getItem();
+                if (st == null || st.isEmpty()) continue;
+
+                if (st.is(ModItems.ARMUPGRADES_ARMCANNON.get())) {
+                    return st;
+                }
+            }
+        }
+
+        return ItemStack.EMPTY;
+    }
+
+    private static void clearInstalledArmCannonNbt(ServerPlayer player) {
+        ItemStack installedArmCannon = getInstalledArmCannonStack(player);
+        if (installedArmCannon.isEmpty()) return;
+
+        SimpleContainer empty = new SimpleContainer(ArmCannonItem.SLOT_COUNT);
+        ArmCannonItem.saveIntoInstalledStack(installedArmCannon, player.registryAccess(), empty);
+    }
+
+    private static ItemStack sanitizeStoredInventoryNbtForDeathDrop(ItemStack stack, HolderLookup.Provider provider) {
+        if (stack == null || stack.isEmpty()) return ItemStack.EMPTY;
+
+        ItemStack copy = stack.copy();
+        copy.setCount(1);
+
+        if (copy.is(ModItems.BONEUPGRADES_SPINALINJECTOR.get())) {
+            SimpleContainer empty = new SimpleContainer(SpinalInjectorItem.SLOT_COUNT);
+            int[] counts = new int[SpinalInjectorItem.SLOT_COUNT];
+            SpinalInjectorItem.saveIntoInstalledStack(copy, provider, empty, counts);
+            return copy;
+        }
+
+        if (copy.is(ModItems.ARMUPGRADES_ARMCANNON.get())) {
+            SimpleContainer empty = new SimpleContainer(ArmCannonItem.SLOT_COUNT);
+            ArmCannonItem.saveIntoInstalledStack(copy, provider, empty);
+            return copy;
+        }
+
+        return copy;
+    }
+
+    private static void clearTransferredStoredInventories(PlayerCyberwareData data) {
+        if (data == null) return;
+
+        data.clearChipwareInventory();
+        data.clearCyberdeckInventory();
+        data.clearSpinalInjectorInventory();
+        data.clearArmCannonInventory();
+
+        for (int i = 0; i < PlayerCyberwareData.HEAT_ENGINE_SLOT_COUNT; i++) {
+            data.setHeatEngineStack(i, ItemStack.EMPTY);
         }
     }
 
