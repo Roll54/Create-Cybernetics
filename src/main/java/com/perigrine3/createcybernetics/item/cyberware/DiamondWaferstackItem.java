@@ -82,7 +82,7 @@ public class DiamondWaferstackItem extends Item implements ICyberwareItem {
 
     @Override
     public int maxStacksPerSlotType(ItemStack stack, CyberwareSlot slotType) {
-        return 1;
+        return 3;
     }
 
     @Override

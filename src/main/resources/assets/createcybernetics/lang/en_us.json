@@ -88,6 +88,7 @@
   "item.createcybernetics.faceplate": "Faceplate",
   "item.createcybernetics.emp_grenade": "EMP Grenade",
   "item.createcybernetics.netherite_qpu": "Netherite Quantum Processor",
+  "item.createcybernetics.qpu_loc": "Found in Nether Fortresses and Bastions",
   "item.createcybernetics.datura_flower": "Datura Flower",
   "item.createcybernetics.datura_seed_pod": "Datura Seed Pod",
 
@@ -828,7 +829,8 @@
               "tooltip.createcybernetics.lungsupgrades_hyperoxygenation.tooltip3": "§7Requires §cLungs",
               "tooltip.createcybernetics.lungsupgrades_hyperoxygenation.energy": "Costs 3/6/9 Energy",
   "tooltip.createcybernetics.lungsupgrades_oxygen.tooltip1": "§1Stores 1 extra minute of oxygen when the user is in breathable air",
-          "tooltip.createcybernetics.lungsupgrades_oxygen.tooltip2": "§7Requires §cLungs",
+      "tooltip.createcybernetics.lungsupgrades_oxygen.tooltip2": "§3Stacks up to 3x",
+          "tooltip.createcybernetics.lungsupgrades_oxygen.tooltip3": "§7Requires §cLungs",
           "tooltip.createcybernetics.lungsupgrades_oxygen.energy": "Costs 3 Energy",
 
       "tooltip.createcybernetics.organsupgrades_adrenaline.tooltip1": "§1Grants the user Speed and Strength when attacked",
@@ -908,5 +910,10 @@
       "tooltip.createcybernetics.wetware_blastemaskeleton.desc": "§7Any more than 8 implants prevents regeneration",
       "tooltip.createcybernetics.wetware_dragonskin.tooltip1": "§cGrants immunity to dragon fire and increases armor",
       "tooltip.createcybernetics.wetware_wardenantlers.tooltip1": "§cAllows the user to see sounds",
-      "tooltip.createcybernetics.wetware_sculkheart.tooltip1": "§cCreates a steady heartbeat rhythm, and gives nearby players the darkness effect"
+      "tooltip.createcybernetics.wetware_sculkheart.tooltip1": "§cCreates a steady heartbeat rhythm, and gives nearby players the darkness effect",
+
+
+
+
+      "tooltip.createcybernetics.charging_block": "Exclusively charges Dense Battery, and can temporarily power cyberware"
 }

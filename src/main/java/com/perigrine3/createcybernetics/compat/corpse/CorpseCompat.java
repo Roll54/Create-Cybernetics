@@ -98,7 +98,7 @@ public final class CorpseCompat {
         if (pending.data() == null || pending.data().isEmpty()) return;
 
         CorpseVisualSnapshotPayload payload =
-                new CorpseVisualSnapshotPayload(player.getUUID(), pending.data().getSnapshot());
+                new CorpseVisualSnapshotPayload(player.getUUID(), pending.data().serializeNBT());
 
         PacketDistributor.sendToPlayer(player, payload);
         PacketDistributor.sendToPlayersTrackingEntity(player, payload);
@@ -176,7 +176,7 @@ public final class CorpseCompat {
 
         PacketDistributor.sendToPlayersTrackingEntity(
                 corpseEntity,
-                new CorpseVisualSnapshotPayload(corpseEntity.getUUID(), data.getSnapshot())
+                new CorpseVisualSnapshotPayload(corpseEntity.getUUID(), data.serializeNBT())
         );
     }
 
@@ -189,7 +189,7 @@ public final class CorpseCompat {
 
         PacketDistributor.sendToPlayer(
                 player,
-                new CorpseVisualSnapshotPayload(corpseEntity.getUUID(), data.getSnapshot())
+                new CorpseVisualSnapshotPayload(corpseEntity.getUUID(), data.serializeNBT())
         );
     }
 

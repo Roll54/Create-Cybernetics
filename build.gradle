@@ -168,6 +168,8 @@ dependencies {
     implementation "curse.maven:happiness-is-a-warm-gun-448106:7124032"
     implementation "curse.maven:common-network-806044:7087488"
     implementation "curse.maven:azurelib-817423:7797694"
+
+    implementation "curse.maven:reforgedplay-mod-1018692:6942967"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

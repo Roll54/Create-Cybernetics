@@ -2,9 +2,11 @@ package com.perigrine3.createcybernetics.item.cyberware;
 
 import com.perigrine3.createcybernetics.api.CyberwareSlot;
 import com.perigrine3.createcybernetics.api.ICyberwareItem;
+import com.perigrine3.createcybernetics.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -48,6 +50,11 @@ public class WardenAntlersItem extends Item implements ICyberwareItem {
     @Override
     public Set<CyberwareSlot> getReplacedOrgans() {
         return Set.of(CyberwareSlot.EYES);
+    }
+
+    @Override
+    public Set<TagKey<Item>> incompatibleCyberwareTags(ItemStack installedStack, CyberwareSlot slot) {
+        return Set.of(ModTags.Items.EYE_ITEMS);
     }
 
     @Override

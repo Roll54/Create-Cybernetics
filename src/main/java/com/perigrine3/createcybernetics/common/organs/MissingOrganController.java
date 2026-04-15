@@ -119,15 +119,26 @@ public final class MissingOrganController {
 
         /* -------------------- LUNGS -------------------- */
         boolean hasGills = data.hasSpecificItem(ModItems.WETWARE_WATERBREATHINGLUNGS.get(), CyberwareSlot.LUNGS);
-        boolean inWater = player.isUnderWater() || player.isInWaterOrRain();
         boolean underWater = player.isUnderWater();
-        boolean canBreathe = (hasLungs && !underWater) ||       // normal lungs on land
-                             (hasGills && inWater) ||           // gills in water
-                             (hasLungs && hasGills);            // both = always
+        boolean inWater = player.isUnderWater() || player.isInWaterOrRain();
 
-        if (canBreathe) {
+// Cases:
+// 1) Normal lungs present -> let vanilla handle air entirely.
+//    This preserves Respiration, Water Breathing, and your oxygen tank refund logic.
+// 2) No lungs, but gills in water -> breathe in water.
+// 3) No lungs, but gills out of water -> suffocate.
+// 4) No lungs and no gills -> suffocate.
+// 5) Both lungs and gills -> breathe anywhere; do not touch vanilla air tracking.
+
+        boolean breatheFreely = hasLungs || (hasGills && inWater);
+        boolean needsCustomSuffocation = !hasLungs && !(hasGills && inWater);
+
+        if (breatheFreely && !needsCustomSuffocation) {
             player.getPersistentData().remove(NO_LUNGS_AIR);
-            player.setAirSupply(player.getMaxAirSupply());
+
+            if (!hasLungs && hasGills) {
+                player.setAirSupply(player.getMaxAirSupply());
+            }
         } else {
             CompoundTag pd = player.getPersistentData();
 

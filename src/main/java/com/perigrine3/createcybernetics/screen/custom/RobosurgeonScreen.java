@@ -987,7 +987,7 @@ public class RobosurgeonScreen extends AbstractContainerScreen<RobosurgeonMenu> 
         addInstalledOverlay(overlays, SANDEVISTAN, fade,
                 ModItems.BONEUPGRADES_SANDEVISTAN.get(), CyberwareSlot.BONE);
 
-        if (ModItems.BONEUPGRADES_ELYTRA.get() != null) {
+        if (ModItems.BONEUPGRADES_ELYTRA != null) {
             addInstalledOverlay(overlays, DEPLOYABLE_ELYTRA, fade,
                     ModItems.BONEUPGRADES_ELYTRA.get(), CyberwareSlot.BONE);
         }

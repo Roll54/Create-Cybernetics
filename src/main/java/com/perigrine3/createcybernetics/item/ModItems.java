@@ -67,6 +67,7 @@ public class ModItems {
                 @Override
                 public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
                     tooltipComponents.add(Component.translatable("tooltip.createcybernetics.legendarycomponent_tooltip"));
+                    tooltipComponents.add(Component.translatable("tooltip.createcybernetics.qpu_loc").withStyle(ChatFormatting.GRAY));
                     super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
                 }});
     public static final DeferredItem<Item> EMP_GRENADE = ITEMS.register("emp_grenade",
@@ -1724,6 +1725,7 @@ public class ModItems {
                     tooltipComponents.add(Component.translatable("tooltip.createcybernetics.lungsupgrades_tooltip"));
                     tooltipComponents.add(Component.translatable("tooltip.createcybernetics.lungsupgrades_oxygen.tooltip1"));
                     tooltipComponents.add(Component.translatable("tooltip.createcybernetics.lungsupgrades_oxygen.tooltip2"));
+                    tooltipComponents.add(Component.translatable("tooltip.createcybernetics.lungsupgrades_oxygen.tooltip3"));
                 } else {
                     tooltipComponents.add(Component.translatable("tooltip.createcybernetics.lungsupgrades_tooltip"));
                     tooltipComponents.add(Component.translatable("tooltip.createcybernetics.hold_shift_down"));

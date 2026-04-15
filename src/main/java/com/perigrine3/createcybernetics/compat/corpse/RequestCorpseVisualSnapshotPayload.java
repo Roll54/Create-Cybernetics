@@ -46,7 +46,7 @@ public record RequestCorpseVisualSnapshotPayload(UUID corpseEntityUuid) implemen
 
             PacketDistributor.sendToPlayer(
                     player,
-                    new CorpseVisualSnapshotPayload(entity.getUUID(), data.getSnapshot())
+                    new CorpseVisualSnapshotPayload(entity.getUUID(), data.serializeNBT())
             );
         });
     }

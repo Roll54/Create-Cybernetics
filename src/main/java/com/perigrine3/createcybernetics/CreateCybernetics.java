@@ -215,6 +215,7 @@ public class CreateCybernetics {
             event.register(ModMenuTypes.SPINAL_INJECTOR_MENU.get(), SpinalInjectorScreen::new);
             event.register(ModMenuTypes.ARM_CANNON_MENU.get(), ArmCannonScreen::new);
             event.register(ModMenuTypes.HEAT_ENGINE_MENU.get(), HeatEngineScreen::new);
+            event.register(ModMenuTypes.CYBERDECK_MENU.get(), CyberdeckScreen::new);
 
             if (CorpseCompat.isLoaded()) {
                 event.register(ModCorpseCompatMenus.CORPSE_CYBERWARE.get(), CorpseCyberwareScreen::new);
