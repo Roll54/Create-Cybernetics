@@ -1,4 +1,7 @@
 {
+
+  "translation_authors": "Original translation. Translators, please write your name and contact in this line in your language file, e.g. \"Discord: roll_54\"",
+
   "createcybernetics.configuration.humanity": "Base Humanity Value",
   "createcybernetics.configuration.keepCyberware": "Keep Cyberware on Death",
   "createcybernetics.configuration.scaleSurgeryDamage": "Scale Surgery Damage",
